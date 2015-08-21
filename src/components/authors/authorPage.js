@@ -3,21 +3,29 @@
 var React = require('react');
 var Router = require('react-router');
 var Link = Router.Link;
-var AuthorApi = require('../../api/authorApi');
+var AuthorStore = require('../../stores/authorStore');
+var AuthorActions = require('../../actions/authorActions');
 var AuthorList = require('./authorList');
 
 var AuthorPage = React.createClass({
 	/* This is a React lifecycle method */
 	getInitialState: function() {
 		return {
-			authors: []
-		};	
+			authors: AuthorStore.getAllAuthors()
+		};
 	},
 	/* This is a React lifecycle method */
+	componentWillMount: function() {
+		// subscribe to changes on authors
+		AuthorStore.addChangeListener(this._onChange);
+	},
+	componentWillUnmount: function() {
+		// unsubscribe to changes on authors
+		AuthorStore.removeChangeListener(this._onChange);
+	},
+	/* This is a React lifecycle method */
+	/* This is a React lifecycle method */
 	componentDidMount: function() {
-		if (this.isMounted()) {
-			this.setState({ authors: AuthorApi.getAllAuthors() });
-		}
 	},
 	render: function() {
 		return (
@@ -27,6 +35,10 @@ var AuthorPage = React.createClass({
 				<AuthorList authors={this.state.authors} />
 			</div>
 		);
+	},
+	
+	_onChange: function() {
+		this.setState({ authors: AuthorStore.getAllAuthors() });
 	}
 });
 
