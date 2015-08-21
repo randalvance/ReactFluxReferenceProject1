@@ -55,6 +55,7 @@ Dispatcher.register(function(action) {
 				return action.id === author.id;
 			});
 			AuthorStore.emitChange();
+			break;
 		default:
 			// no op
 	}
